@@ -1,0 +1,82 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-parcelize'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
+    id "androidx.navigation.safeargs"
+}
+
+android {
+    compileSdk rootProject.ext.compileSdk
+    compileSdkVersion rootProject.ext.compileSdk
+
+    defaultConfig {
+        applicationId "com.amosh.weatherapplication"
+        minSdkVersion rootProject.ext.minSdk
+        targetSdkVersion rootProject.ext.targetSdk
+        versionCode generateVersionCode()
+        versionName generateVersionName()
+        flavorDimensions "default"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    productFlavors {
+        dev {
+            buildConfigField 'String', 'BASE_URL', '"https://api.openweathermap.org/data/2.5/"'
+        }
+        staging {
+            buildConfigField 'String', 'BASE_URL', '"https://api.openweathermap.org/data/2.5/"'
+        }
+        prod {
+            buildConfigField 'String', 'BASE_URL', '"https://api.openweathermap.org/data/2.5/"'
+        }
+    }
+
+
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
+
+    buildFeatures {
+        // Open data binding
+        dataBinding true
+        // Open view binding
+        viewBinding true
+    }
+}
+
+dependencies {
+    implementation project(":base")
+    implementation project(":common")
+    implementation project(":domain")
+    implementation project(":data")
+    implementation project(":remote")
+    implementation project(":local")
+    implementation project(":feature")
+
+    implementation "com.google.dagger:hilt-android:2.41"
+    kapt "com.google.dagger:hilt-android-compiler:2.41"
+}
+
+private Integer generateVersionCode() {
+    return minSdk * 10000000 + versionMajor * 10000 + versionMinor * 100 + versionPatch
+}
+
+
+private String generateVersionName() {
+    return "${versionMajor}.${versionMinor}.${versionPatch}"
+}
